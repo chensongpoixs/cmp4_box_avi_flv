@@ -1,0 +1,6 @@
+[submodule "audio_video_example"]
+	path = audio_video_example
+	url = https://github.com/chensongpoixs/caudio_video.git
+[submodule "video_codec"]
+	path = video_codec
+	url = https://github.com/chensongpoixs/cvideo_codec.git
