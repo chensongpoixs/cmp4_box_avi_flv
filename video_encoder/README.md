@@ -2,6 +2,8 @@
 
 1. JPEG编码不但要学，还要自己实现，这是图像编码的基础，理解下yuv, dct, 量化，熵编码（不用参考 libjpeg，太庞大，建议参考 tinyjpeg.c，单文件）
 
+[tinyjpeg.c](https://github.com/philips/libv4l)
+
 2. MPEG2编码要学，现代编码器都是 block based 的，而 block based编码器的祖先就在MPEG2，理解下帧内编码，帧间预测，运动矢量，残差图等基础概念。具体代码可以看早期版本的 ffmpeg 的 avcodec，比如 mpeg12enc.c 代码也就1000多行，容易看，不过其中牵扯很多ffmpeg的内部数据结构，比如 picture, DCTELEM，各种 table，bitstream，vlc, swscale 等公共模块，缺点是文档少，优点是读了这些对你读其他 ffmpeg代码有帮助。
 
 3. 自己实现一个类 MPEG2 编码器，最好自己从头实现个编码器，具体实现方式可以参考我的上面提到的 “视频编码技术简介”。
