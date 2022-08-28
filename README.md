@@ -4,7 +4,7 @@
 
 音频和视频的基础知识的代码demo
 
-## 二、[h264、mp4](https://github.com/chensongpoixs/cmp4_box_avi_flv/mp4)
+## 二、[h264、mp4](https://github.com/chensongpoixs/cmp4_box_avi_flv/tree/master/mp4)
 
 音视频基础知识之视频压缩格式保存格式和文件格式分析
 
