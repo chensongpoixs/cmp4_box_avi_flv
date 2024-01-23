@@ -7,7 +7,7 @@ git submodule add https://github.com/chensongpoixs/cvideo_codec.git video_codec
 # 
 git submodule add https://github.com/chensongpoixs/cjpeg_encode_decoder.git jpeg_encode_decoder
 
-
+git submodule add https://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@github.com/chensongpoixs/cd3d10_d3d11_d3d12_dxgi_opengl.git  Server/cd3d10_d3d11_d3d12_dxgi_opengl
 
 # 清除缓存
 git rm --cached  jpeg_encode_decoder
