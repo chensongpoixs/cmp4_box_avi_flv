@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="push">
+      <UniqueIdentifier>{2743ab8b-eaac-4f5c-ba3e-be11c781fb81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="util">
+      <UniqueIdentifier>{cffc0ff0-f134-48c4-aec1-81c56ca5fe35}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="crtsp_push.cpp">
+      <Filter>push</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="crtmp_push.cpp">
+      <Filter>push</Filter>
+    </ClCompile>
+    <ClCompile Include="cbytebuffer.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="crtsp_push.h">
+      <Filter>push</Filter>
+    </ClInclude>
+    <ClInclude Include="crtmp_push.h">
+      <Filter>push</Filter>
+    </ClInclude>
+    <ClInclude Include="cbytebuffer.h">
+      <Filter>util</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

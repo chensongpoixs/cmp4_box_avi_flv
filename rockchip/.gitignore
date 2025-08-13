@@ -1,0 +1,16 @@
+/.vs
+/Debug
+/x64
+/push_demo/push_demo.vcxproj.user
+/push_demo/swresample-5.dll
+/push_demo/swscale-8.dll
+/push_demo/Debug
+/push_demo/x64
+/push_demo/avcodec-61.dll
+/push_demo/avdevice-61.dll
+/push_demo/avfilter-10.dll
+/push_demo/avformat-61.dll
+/push_demo/avutil-59.dll
+/push_demo/postproc-58.dll
+/libdsp_video/~AutoRecover.libdsp_video.vcxproj
+/libdsp_video/build

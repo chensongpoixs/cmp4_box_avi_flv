@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="amf.c" />
+    <ClCompile Include="hashswf.c" />
+    <ClCompile Include="log.c" />
+    <ClCompile Include="parseurl.c" />
+    <ClCompile Include="rtmp.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="amf.h" />
+    <ClInclude Include="bytes.h" />
+    <ClInclude Include="dh.h" />
+    <ClInclude Include="dhgroups.h" />
+    <ClInclude Include="handshake.h" />
+    <ClInclude Include="http.h" />
+    <ClInclude Include="log.h" />
+    <ClInclude Include="rtmp.h" />
+    <ClInclude Include="rtmp_sys.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="COPYING" />
+    <None Include="librtmp.3" />
+    <None Include="librtmp.3.html" />
+    <None Include="librtmp.pc.in" />
+    <None Include="Makefile" />
+  </ItemGroup>
+</Project>
