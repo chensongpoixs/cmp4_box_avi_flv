@@ -42,9 +42,9 @@ namespace  libmedia_codec
 		// 码率控制，CQP、CRF、ABR
 		std::string rate_control = "CRF";
 		// 目标码率, 单位kbps
-		int bitrate = 1000 * 1000;
-		int max_bitrate = 1500 * 1000;
-		int buffer_size = 1500 * 1000;
+		int bitrate = 10000 * 1000;
+		int max_bitrate = 15000 * 1000;
+		int buffer_size = 15000 * 1000;
 		int cf = 25;
 		// 图像的宽高
 		int width = 1920;
