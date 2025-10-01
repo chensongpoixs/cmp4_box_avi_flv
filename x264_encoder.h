@@ -30,6 +30,7 @@
 #include "i420_buffer.h"
 #include "libmedia_codec/video_frame.h"
 #include "libmedia_codec/encoded_image.h"
+//#include <al>
 namespace  libmedia_codec
 {
 	struct X264EncoderParam {
@@ -40,7 +41,7 @@ namespace  libmedia_codec
 		// profile
 		std::string profile = "baseline";
 		// 码率控制，CQP、CRF、ABR
-		std::string rate_control = "CRF";
+		std::string rate_control = "ABR";
 		// 目标码率, 单位kbps
 		int bitrate = 10000 * 1000;
 		int max_bitrate = 15000 * 1000;
@@ -73,6 +74,9 @@ namespace  libmedia_codec
 		void OnNewMediaFrame(std::shared_ptr<libmedia_codec::VideoFrame>)  ;
 		 
 		void SetSendFrame(EncodeImageObser  *   encode_image_obser);
+
+
+		void SetBitrate(int32_t  bitrate);
 	private:
 		bool InitEncoder();
 		void ReleaseEncoder();
@@ -93,6 +97,8 @@ namespace  libmedia_codec
 		x264_picture_t* x264_picture_ = nullptr;
 
 		EncodeImageObser  *   encode_image_obser_;
+
+		int32_t                last_bitrate_;
 	};
 
 }

@@ -43,6 +43,7 @@ namespace libmedia_codec
 		}
 	}
 	X264Encoder::X264Encoder()
+		: last_bitrate_(1000)
 	{}
 	X264Encoder::~X264Encoder() {}
 	 
@@ -71,10 +72,21 @@ namespace libmedia_codec
 			}
 
 			int frame_queue_size = 0;
-
+			int32_t  prev_bitrate = last_bitrate_;
 			while (running_) {
 				std::shared_ptr< libmedia_codec::VideoFrame> frame;
+				if (last_bitrate_ != prev_bitrate)
+				{
+					prev_bitrate = last_bitrate_;
+					x264_param_->rc.i_rc_method = X264_RC_ABR;
+				 
+					x264_param_->rc.i_bitrate = prev_bitrate * 0.8 ;
+					x264_param_->rc.i_vbv_max_bitrate = x264_param_->rc.i_bitrate;
+					x264_param_->rc.i_vbv_buffer_size = x264_param_->rc.i_bitrate;
 
+					//重新配置x264参数数
+					x264_encoder_reconfig(x264_, x264_param_);
+				}
 				{
 					std::unique_lock<std::mutex> auto_lock(frame_queue_mtx_);
 					frame_queue_size = frame_queue_.size();
@@ -153,6 +165,11 @@ namespace libmedia_codec
 	void X264Encoder::SetSendFrame(EncodeImageObser * encode_image_obser)
 	{
 		encode_image_obser_ = encode_image_obser;
+	}
+	void X264Encoder::SetBitrate(int32_t  bitrate)
+	{
+		
+		last_bitrate_ = bitrate;
 	}
 	 
 	bool X264Encoder::InitEncoder() {
@@ -241,7 +258,7 @@ namespace libmedia_codec
 
 		// 设置编码帧的类型
 		x264_picture_->i_type = X264_TYPE_AUTO;
-
+		last_bitrate_ = encoder_param_.bitrate;
 		return true;
 	}
 	void X264Encoder::ReleaseEncoder() {
