@@ -56,7 +56,8 @@ file(GLOB libmedia_codec_source
 	generic_frame_descriptor/*.cpp 
 	generic_frame_descriptor/*.cc 
 	
-	
+	audio_codec/*.h 
+	audio_codec/*.cpp 
 ) 
 
 
