@@ -75,18 +75,7 @@ namespace libmedia_codec
 			int32_t  prev_bitrate = last_bitrate_;
 			while (running_) {
 				std::shared_ptr< libmedia_codec::VideoFrame> frame;
-				if (last_bitrate_ != prev_bitrate)
-				{
-					prev_bitrate = last_bitrate_;
-					x264_param_->rc.i_rc_method = X264_RC_ABR;
-				 
-					x264_param_->rc.i_bitrate = prev_bitrate * 0.8 ;
-					x264_param_->rc.i_vbv_max_bitrate = x264_param_->rc.i_bitrate;
-					x264_param_->rc.i_vbv_buffer_size = x264_param_->rc.i_bitrate;
-
-					//重新配置x264参数数
-					x264_encoder_reconfig(x264_, x264_param_);
-				}
+			
 				{
 					std::unique_lock<std::mutex> auto_lock(frame_queue_mtx_);
 					frame_queue_size = frame_queue_.size();
@@ -100,7 +89,20 @@ namespace libmedia_codec
 						continue;
 					}
 				}
-
+#if 0
+				if (last_bitrate_ != prev_bitrate)
+				{
+					prev_bitrate = last_bitrate_;
+				//	x264_param_->rc.i_rc_method = X264_RC_ABR;
+			 
+					x264_param_->rc.i_bitrate = prev_bitrate * 0.8 ;
+					x264_param_->rc.i_vbv_max_bitrate = x264_param_->rc.i_bitrate;
+					x264_param_->rc.i_vbv_buffer_size = x264_param_->rc.i_bitrate;
+			
+					//重新配置x264参数数
+					x264_encoder_reconfig(x264_, x264_param_);
+				}
+#endif // 
 				// 判断图像的宽高是否发生了变化，如果发生了变化，需要重新初始化编码器
 				if (encoder_param_.width != frame->width() ||
 					encoder_param_.height != frame->height())
@@ -122,6 +124,17 @@ namespace libmedia_codec
 				memcpy(x264_picture_->img.plane[0], i420_buffer->DataY(), frame->width() * frame->height());
 				memcpy(x264_picture_->img.plane[1], i420_buffer->DataU(), i420_buffer->StrideU() * (frame->height() + 1)/2);
 				memcpy(x264_picture_->img.plane[2], i420_buffer->DataV(), i420_buffer->StrideU() * (frame->height() + 1) / 2);
+#if 0
+				static FILE* out_pic_ptr = fopen("pic.yuv", "wb+");
+				if (out_pic_ptr)
+				{
+					fwrite( i420_buffer->DataY(),1, frame->width() * frame->height(), out_pic_ptr);
+					fwrite( i420_buffer->DataU(),1, i420_buffer->StrideU() * (frame->height() + 1) / 2, out_pic_ptr);
+					fwrite( i420_buffer->DataV(),1, i420_buffer->StrideU() * (frame->height() + 1) / 2, out_pic_ptr);
+					fflush(out_pic_ptr);
+
+				}
+#endif // 
 				// 编码
 				std::shared_ptr<libmedia_codec::EncodedImage> out_frame;
 				if (!Encode(frame, out_frame)) {
@@ -336,7 +349,8 @@ namespace libmedia_codec
 		}
 		
 		out_frame = std::make_shared<libmedia_codec::EncodedImage>();
-		rtc::scoped_refptr<libmedia_codec::EncodedImageBufferInterface> encoder_image=  libmedia_codec::EncodedImageBuffer::Create(data_size);
+		rtc::scoped_refptr<libmedia_codec::EncodedImageBufferInterface> encoder_image=  
+			libmedia_codec::EncodedImageBuffer::Create(data_size);
 		//RTC_LOG_F(LS_INFO) << "encoder frame size = " << data_size;
 		//out_frame->fmt.media_type = MainMediaType::kMainTypeVideo;
 		//out_frame->fmt.sub_fmt.video_fmt.type = SubMediaType::kSubTypeH264;
@@ -367,6 +381,15 @@ namespace libmedia_codec
 				data_index += nal.i_payload;
 			}
 		}
+#if 0
+
+		static FILE *out_file_ptr = fopen("test.h264", "wb+");
+		if (out_file_ptr)
+		{
+			fwrite(encoder_image->data(), 1, encoder_image->size(), out_file_ptr);
+			fflush(out_file_ptr);
+		}
+#endif ///
 
 		return true;
 	}
