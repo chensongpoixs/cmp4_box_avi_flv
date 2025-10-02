@@ -146,7 +146,7 @@ bool OpusEncoder2::Start() {
 			encode_frame->encoded_timestamp = frame->timestamp_;
 			encode_frame->audio_encode_data.AppendData(encoded_buffer);
 			encode_frame->encoder_type = AudioEncoder::CodecType::kOpus;
-#if 1
+#if 0
 			static FILE * out_audio_file = fopen("audio.opus", "wb+");
 			if (out_audio_file)
 			{
