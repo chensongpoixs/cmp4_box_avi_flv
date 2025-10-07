@@ -28,6 +28,7 @@ include_directories(
 	../deps/abseil-cpp/
 	../deps/curl-7.81.0/include
 	../deps/jsoncpp/source/include
+	${DEPS_DIR}/ffmpeg/include
 )
 
 

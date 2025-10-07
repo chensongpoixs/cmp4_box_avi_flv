@@ -192,6 +192,9 @@ class RTC_EXPORT EncodedImage {
     int64_t receive_finish_ms = 0;
   } timing_;
 
+
+
+  std::string  ToString() const;
  private:
   size_t capacity() const { return encoded_data_ ? encoded_data_->size() : 0; }
 

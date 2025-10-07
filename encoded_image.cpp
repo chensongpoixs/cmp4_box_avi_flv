@@ -22,7 +22,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-
+#include <sstream>
 #include "rtc_base/ref_counted_object.h"
 
 namespace libmedia_codec {
@@ -108,4 +108,14 @@ void EncodedImage::SetSpatialLayerFrameSize(int spatial_index,
   spatial_layer_frame_size_bytes_[spatial_index] = size_bytes;
 }
 
+
+std::string  EncodedImage::ToString() const
+{
+	std::stringstream cmd;
+	std::string      frame_type = _frameType == VideoFrameType::kVideoFrameKey ? "kVideoFrameKey" : "kVideoFrameDelta";
+	cmd << "_frameType: " << frame_type;
+	cmd << ", timestamp: " << Timestamp();
+
+	return cmd.str();
+}
 }  // namespace webrtc
