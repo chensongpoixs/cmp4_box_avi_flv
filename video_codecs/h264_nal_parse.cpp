@@ -59,7 +59,7 @@ namespace  libmedia_codec
 		}
 		switch (type) {
 		case 0:                    // undefined, but pass them through
-		case 1:
+		case 1: // 非IDR图像的Slice
 			//if ((result = av_new_packet(pkt, len + sizeof(start_sequence))) < 0)
 			//	return result;
 			memcpy(buffer_stream_ + buffer_index_, start_sequence, sizeof(start_sequence));

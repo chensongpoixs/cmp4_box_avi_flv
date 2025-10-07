@@ -45,10 +45,11 @@ namespace libmedia_codec
 
 		virtual int32_t  parse_packet(const uint8_t * data, size_t size) = 0;
 	public:
-
+		// fa 单包
 		int ff_h264_handle_aggregated_packet(const uint8_t *buf, int len,
 			int skip_between, int *nal_counters,
 			int nal_mask);
+		// 组包
 		int h264_handle_packet_fu_a(
 			const uint8_t *buf, int len,
 			int *nal_counters, int nal_mask);
