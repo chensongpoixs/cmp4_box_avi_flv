@@ -70,7 +70,7 @@ namespace libmedia_codec
 	   bool H264Decoder::Configure(libmedia_codec::VideoCodecType codec_type, int32_t width, int32_t height)
 	   {
 		   ReportInit();
-		   if (codec_type != libmedia_codec::kVideoCodecH264)
+		   if (codec_type != libmedia_codec::kVideoCodecH264 && codec_type != libmedia_codec::kVideoCodecHevc)
 		   {
 			   ReportError();
 			   return false;
@@ -88,8 +88,16 @@ namespace libmedia_codec
 		   av_context_.reset(avcodec_alloc_context3(nullptr));
 
 		   av_context_->codec_type = AVMEDIA_TYPE_VIDEO;
-		   av_context_->codec_id = AV_CODEC_ID_H264;
-		   
+		   if (codec_type == libmedia_codec::kVideoCodecH264)
+		   {
+
+			   av_context_->codec_id = AV_CODEC_ID_H264;
+		   }
+		   else
+		   {
+			   av_context_->codec_id = AV_CODEC_ID_HEVC;;
+			   //codec_type != libmedia_codec::kVideoCodecHevc
+		   }
 		    
 			   av_context_->coded_width = width;
 			   av_context_->coded_height = height;

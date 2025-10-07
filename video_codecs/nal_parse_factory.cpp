@@ -1,4 +1,4 @@
-Ôªø/******************************************************************************
+/******************************************************************************
  *  Copyright (c) 2025 The CRTC project authors . All Rights Reserved.
  *
  *  Please visit https://chensongpoixs.github.io for detail
@@ -11,31 +11,47 @@
  ******************************************************************************/
  /*****************************************************************************
 				   Author: chensong
-				   date:  2025-10-06
+				   date:  2025-10-07
 
 
 
  ******************************************************************************/
-
-#include "libmedia_codec/video_codecs/h264_nal_decoder.h"
+#include "libmedia_codec/video_codecs/nal_parse_factory.h"
+#include "libmedia_codec/video_codecs/hevc_nal_parse.h"
+#include "libmedia_codec/video_codecs/h264_nal_parse.h"
 #include "rtc_base/logging.h"
 #include "libmedia_transfer_protocol/rtp_rtcp/byte_io.h"
-namespace  libmedia_codec
+
+
+namespace libmedia_codec
 {
 	namespace {
-		static const uint8_t start_sequence[4] = {0x00, 0X00, 0x00, 0X01};
+		static const uint8_t start_sequence[4] = { 0x00, 0X00, 0x00, 0X01 };
 
-		static const int32_t NAL_MASK = 0x1f;
+		//static const int32_t NAL_MASK = 0x1f;
 	}
-
-	H264NalDecoder::H264NalDecoder() 
-	:buffer_stream_(new uint8_t [1024* 1024 * 8])
-	{}
-	H264NalDecoder::~H264NalDecoder()
+	std::unique_ptr<NalParseInterface>   NalParseFactory::Create(ENalParseType type)
 	{
+
+
+		switch (type)
+		{
+		case libmedia_codec::ENalH264Prase:
+			return std::make_unique<H264NalParse>();
+			break;
+		case libmedia_codec::ENalHEVCPrase:
+			return std::make_unique<HevcNalParse>();
+			break;
+		default:
+			break;
+		}
+		RTC_LOG(LS_ERROR) << "not nowke type:" << type;
+		return nullptr;
 	}
 
-	int H264NalDecoder::ff_h264_handle_aggregated_packet(const uint8_t *buf, int len,
+
+
+	int NalParseInterface::ff_h264_handle_aggregated_packet(const uint8_t *buf, int len,
 		int skip_between, int *nal_counters,
 		int nal_mask)
 	{
@@ -53,7 +69,7 @@ namespace  libmedia_codec
 			while (src_len > 2)
 			{
 				// // Add NAL unit length field.
-				// ËØªÂèñÂÖ•NALU length field
+				// ∂¡»°»ÎNALU length field
 				uint16_t nal_size = libmedia_transfer_protocol::ByteReader<uint16_t>::ReadBigEndian(src);
 				//uint16_t nal_size = AV_RB16(src);
 
@@ -93,9 +109,9 @@ namespace  libmedia_codec
 			if (pass == 0) {
 				/* now we know the total size of the packet (with the
 				 * start sequences added) */
-				//if ((ret = av_new_packet(pkt, total_length)) < 0)
-				//	return ret;
-				//dst = pkt->data;
+				 //if ((ret = av_new_packet(pkt, total_length)) < 0)
+				 //	return ret;
+				 //dst = pkt->data;
 			}
 		}
 		//bit_stream_ << nal_aggregated.str();
@@ -103,7 +119,7 @@ namespace  libmedia_codec
 		return 0;
 	}
 
-	int H264NalDecoder::h264_handle_packet_fu_a(
+	int NalParseInterface::h264_handle_packet_fu_a(
 		const uint8_t *buf, int len,
 		int *nal_counters, int nal_mask)
 	{
@@ -127,10 +143,10 @@ namespace  libmedia_codec
 
 		//if (start_bit && nal_counters)
 		//	nal_counters[nal_type & nal_mask]++;
-		return ff_h264_handle_frag_packet(  buf, len, start_bit, &nal, 1);
+		return ff_h264_handle_frag_packet(buf, len, start_bit, &nal, 1);
 		//return 0;
 	}
-	int H264NalDecoder::ff_h264_handle_frag_packet(const uint8_t *buf, int len,
+	int NalParseInterface::ff_h264_handle_frag_packet(const uint8_t *buf, int len,
 		int start_bit, const uint8_t *nal_header,
 		int nal_header_len)
 	{
@@ -145,7 +161,7 @@ namespace  libmedia_codec
 		//if ((ret = av_new_packet(pkt, tot_len)) < 0)
 		//	return ret;
 		if (start_bit) {
-			
+
 			memcpy(buffer_stream_ + buffer_index_, start_sequence, sizeof(start_sequence));
 			buffer_index_ += sizeof(start_sequence);
 			memcpy(buffer_stream_ + buffer_index_, nal_header, nal_header_len);
@@ -159,77 +175,5 @@ namespace  libmedia_codec
 		//cmd << std::string((char*)buf, len);
 		//bit_stream_ << cmd.str();
 		return 0;
-	}
-	int32_t H264NalDecoder::parse_packet(const uint8_t * buf, size_t len)
-	{
-
-		uint8_t nal;
-		uint8_t type;
-		int result = 0;
-
-		if (!len) {
-			//av_log(ctx, AV_LOG_ERROR, "Empty H.264 RTP packet\n");
-			RTC_LOG(LS_WARNING) << "Empty H.264 RTP packet";
-			return -1;
-		}
-		nal = buf[0];
-		type = nal & 0x1f;
-
-		/* Simplify the case (these are all the NAL types used internally by
-	* the H.264 codec). */
-		if (type >= 1 && type <= 23)
-		{
-			type = 1;
-		}
-		switch (type) {
-		case 0:                    // undefined, but pass them through
-		case 1:
-			//if ((result = av_new_packet(pkt, len + sizeof(start_sequence))) < 0)
-			//	return result;
-			memcpy(buffer_stream_ + buffer_index_, start_sequence, sizeof(start_sequence));
-			buffer_index_ += 4;
-			memcpy(buffer_stream_ + buffer_index_  , buf, len);
-			buffer_index_ += len;
-			//COUNT_NAL_TYPE(data, nal);
-			//bit_stream_ << start_sequence;
-			//bit_stream_ << buf;
-			break;
-
-		case 24:                   // STAP-A (one packet, multiple nals)
-			// consume the STAP-A NAL
-			buf++;
-			len--;
-			result = ff_h264_handle_aggregated_packet( buf, len, 0,
-				0/*NAL_COUNTERS*/, NAL_MASK);
-			break;
-
-		case 25:                   // STAP-B
-		case 26:                   // MTAP-16
-		case 27:                   // MTAP-24
-		case 29:                   // FU-B
-			//avpriv_report_missing_feature(ctx, "RTP H.264 NAL unit type %d", type);
-			RTC_LOG(LS_WARNING) << "RTP H.264 NAL unit type : " << type;
-			result = AVERROR_PATCHWELCOME;
-			break;
-
-		case 28:                   // FU-A (fragmented nal)
-			result = h264_handle_packet_fu_a(  buf, len,
-				0, NAL_MASK);
-			break;
-
-		case 30:                   // undefined
-		case 31:                   // undefined
-		default:
-			//av_log(ctx, AV_LOG_ERROR, "Undefined type (%d)\n", type);
-			RTC_LOG(LS_WARNING) << "Undefined type: " << type;
-			result = AVERROR_INVALIDDATA;
-			break;
-		}
-
-		//pkt->stream_index = st->index;
-
-		return result;
-
-		return int32_t();
 	}
 }
