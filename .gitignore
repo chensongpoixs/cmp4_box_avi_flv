@@ -9,4 +9,6 @@
 /--Tools/*
 /--Tools/bf6eb-main/Elecard StreamAnalyzer/SAnalyzer.exe 
 /Tools/MPEG-2 TS packet analyser.7z
-/Tools/FlvAnalyzer.7z
+/Tools/*
+/ddTools/FlvAnalyzer.7z
+/ddTools/MPEG-2 TS packet analyser.7z
