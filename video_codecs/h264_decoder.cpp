@@ -186,11 +186,28 @@ namespace libmedia_codec
 		   packet->size = static_cast<int>(input_image.size());
 		   int64_t frame_timestamp_us = input_image.ntp_time_ms_ * 1000;  // ms -> μs
 #if 0
-		   static FILE *out_ptr_ptr = fopen("test_h264.mp4", "wb+");
-		   if (out_ptr_ptr)
 		   {
-			   fwrite(packet->data, 1, packet->size, out_ptr_ptr);
-			   fflush(out_ptr_ptr);
+			   static int32_t count = 0;
+			   ++count;
+			   std::string file = "./test/" + std::to_string(count) + ".mp4";
+
+
+			   FILE *out_ptr_ptr = fopen(file.c_str(), "wb+");
+			   if (out_ptr_ptr)
+			   {
+				   fwrite(packet->data, 1, packet->size, out_ptr_ptr);
+				   fflush(out_ptr_ptr);
+				   fclose(out_ptr_ptr);
+			   }
+		   }
+		   {
+			 static   FILE *out_ptr_ptr = fopen("test_hik_ps.mp4", "wb+");
+			   if (out_ptr_ptr)
+			   {
+				   fwrite(packet->data, 1, packet->size, out_ptr_ptr);
+				   fflush(out_ptr_ptr);
+				  // fclose(out_ptr_ptr);
+			   }
 		   }
 #endif // 
 		   av_context_->reordered_opaque = frame_timestamp_us;
