@@ -7,3 +7,6 @@
 [submodule "jpeg_encode_decoder"]
 	path = jpeg_encode_decoder
 	url = https://github.com/chensongpoixs/cjpeg_encode_decoder.git
+[submodule "Tools"]
+	path = Tools
+	url = https://gitee.com/chen_song/tools.git

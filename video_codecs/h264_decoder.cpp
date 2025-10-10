@@ -185,6 +185,14 @@ namespace libmedia_codec
 		   }
 		   packet->size = static_cast<int>(input_image.size());
 		   int64_t frame_timestamp_us = input_image.ntp_time_ms_ * 1000;  // ms -> μs
+#if 0
+		   static FILE *out_ptr_ptr = fopen("test_h264.mp4", "wb+");
+		   if (out_ptr_ptr)
+		   {
+			   fwrite(packet->data, 1, packet->size, out_ptr_ptr);
+			   fflush(out_ptr_ptr);
+		   }
+#endif // 
 		   av_context_->reordered_opaque = frame_timestamp_us;
 
 		   int result = avcodec_send_packet(av_context_.get(), packet.get());
