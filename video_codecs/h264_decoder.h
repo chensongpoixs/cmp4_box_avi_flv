@@ -54,6 +54,8 @@ namespace libmedia_codec {
 	struct AVFrameDeleter {
 		void operator()(AVFrame* ptr) const { av_frame_free(&ptr); }
 	};
+
+	
 	class H264Decoder
 	{
 	public:

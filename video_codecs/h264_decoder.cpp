@@ -39,7 +39,6 @@ namespace libmedia_codec
 			kH264DecoderEventError = 1,
 			kH264DecoderEventMax = 16,
 		};
-
 		struct ScopedPtrAVFreePacket {
 			void operator()(AVPacket* packet) { av_packet_free(&packet); }
 		};
@@ -50,6 +49,7 @@ namespace libmedia_codec
 			return packet;
 		}
 
+		
 	}  // namespace
 	H264Decoder::H264Decoder()
 		: ffmpeg_buffer_pool_(true),
