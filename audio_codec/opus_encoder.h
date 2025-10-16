@@ -42,9 +42,10 @@ class OpusEncoder2  {
 public:
 	OpusEncoder2();
     ~OpusEncoder2()  ;
-
+	
     bool Start()  ;
-     
+	void SetChannel(int32_t channels);
+	void  SetSample(int32_t  sample);
     void Stop()  ;
      
 	void  OnNewMediaFrame(std::shared_ptr<libmedia_codec::AudioFrame> frame);
@@ -59,7 +60,7 @@ private:
     std::atomic<bool> running_{ false };
     int opus_app_;
     size_t sample_rate_hz_ = 48000;
-    size_t channels_ = 1;
+    size_t channels_ = 2;
     uint32_t bitrate_ = 48000; // 48kbps
     std::queue<std::shared_ptr<libmedia_codec::AudioFrame>> frame_queue_;
     std::mutex frame_queue_mtx_;

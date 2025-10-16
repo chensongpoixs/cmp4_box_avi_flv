@@ -165,7 +165,14 @@ bool OpusEncoder2::Start() {
 
     return true;
 }
- 
+void OpusEncoder2::SetChannel(int32_t channels)
+{
+	channels_ = channels;
+}
+void  OpusEncoder2::SetSample(int32_t  sample)
+{
+	sample_rate_hz_ = sample;
+}
 
 void OpusEncoder2::Stop() {
     RTC_LOG(LS_INFO) << "OpusEncoder2 Stop";
