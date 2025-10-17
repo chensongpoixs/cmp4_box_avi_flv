@@ -140,7 +140,7 @@ namespace libmedia_codec
 				if (!Encode(frame, out_frame)) {
 					continue;
 				}
-				if (encode_image_obser_ &&out_frame)
+				if (running_ &&encode_image_obser_ &&out_frame)
 				{
 					encode_image_obser_->SendVideoEncode(out_frame);
 				} 
@@ -170,6 +170,10 @@ namespace libmedia_codec
 		}
 	}
 	void X264Encoder::OnNewMediaFrame(std::shared_ptr<libmedia_codec::VideoFrame> frame) {
+		if (!running_)
+		{
+			return;
+		}
 		std::unique_lock<std::mutex> auto_lock(frame_queue_mtx_);
 		frame_queue_.push(frame);
 		cond_var_.notify_one();
