@@ -140,7 +140,7 @@ namespace libmedia_codec
 				if (!Encode(frame, out_frame)) {
 					continue;
 				}
-				if (encode_image_obser_)
+				if (encode_image_obser_ &&out_frame)
 				{
 					encode_image_obser_->SendVideoEncode(out_frame);
 				} 
@@ -314,9 +314,9 @@ namespace libmedia_codec
 		std::vector<x264_nal_t> nals;
 		bool idr = false;
 		int sps_length = 0;
-		char sps[1024] = { 0 };
+		char sps[1024*8] = { 0 };
 		int pps_length = 0;
-		char pps[1024] = { 0 };
+		char pps[1024*8] = { 0 };
 
 		for (int i = 0; i < nal_num; ++i) {
 			x264_nal_t& nal = nal_out[i];
