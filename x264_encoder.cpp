@@ -219,7 +219,7 @@ namespace libmedia_codec
 		x264_param_->i_threads = 1;
 		// 每个I帧前面都携带SPS PPS
 		x264_param_->b_repeat_headers = 1;
-
+		x264_param_->i_level_idc = encoder_param_.level_idc;
 		// 设置码率控制参数
 		if ("ABR" == encoder_param_.rate_control) {
 			x264_param_->rc.i_rc_method = X264_RC_ABR;

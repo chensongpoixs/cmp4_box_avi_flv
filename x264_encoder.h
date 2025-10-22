@@ -40,6 +40,8 @@ namespace  libmedia_codec
 		std::string tune = "zerolatency";
 		// profile
 		std::string profile = "baseline";
+		
+		int32_t   level_idc = 31;
 		// 码率控制，CQP、CRF、ABR
 		std::string rate_control = "ABR";
 		// 目标码率, 单位kbps
@@ -54,6 +56,7 @@ namespace  libmedia_codec
 		int fps = 30;
 		// GOP
 		int gop = 60; // 2s
+
 	};
 
 	class EncodeImageObser
