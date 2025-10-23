@@ -36,7 +36,7 @@ const int kDefaultComplexity = 9;
 } // namespace
 
 OpusEncoder2::OpusEncoder2() :
-    opus_app_(OPUS_APPLICATION_VOIP)
+    opus_app_(OPUS_APPLICATION_VOIP/*OPUS_APPLICATION_AUDIO*/)
 	, encode_audio_obser_(nullptr)
 {
      
@@ -194,6 +194,11 @@ void OpusEncoder2::Stop() {
 void OpusEncoder2::OnNewMediaFrame(std::shared_ptr<libmedia_codec::AudioFrame> frame) {
     // 在音频采集线程触发
     std::unique_lock<std::mutex> lock(frame_queue_mtx_);
+	if (!running_)
+	{
+		LIBMEIDA_CODEC_LOG_T_F(LS_WARNING) << "opus encoder add frame failed !!! stop !!!";
+		return;
+	}
     frame_queue_.push(frame);
     cond_var_.notify_one();
 }
