@@ -37,7 +37,7 @@ const int kDefaultComplexity = 9;
 
 OpusEncoder2::OpusEncoder2() :
     opus_app_(OPUS_APPLICATION_VOIP/*OPUS_APPLICATION_AUDIO*/)
-	, encode_audio_obser_(nullptr)
+	 
 {
      
 }
@@ -129,18 +129,7 @@ bool OpusEncoder2::Start() {
 				fflush(out_pcm_ptr);
 			}*/
 
-            // 创建新的media frame
-            //auto output_frame = std::make_shared<MediaFrame>(ret);
-            //output_frame->fmt.media_type = MainMediaType::kMainTypeAudio;
-            //output_frame->fmt.sub_fmt = frame->fmt.sub_fmt;
-            //output_frame->fmt.sub_fmt.audio_fmt.type = SubMediaType::kSubTypeOpus;
-            //output_frame->data_len[0] = ret;
-            //memcpy(output_frame->data[0], encoded_buffer, ret);
-            //output_frame->ts = frame->ts;
-			//
-            //if (out_pin_) {
-            //    out_pin_->PushMediaFrame(output_frame);
-            //}
+           
 			auto encode_frame = std::make_shared< AudioEncoder::EncodedInfoLeaf>();
 			encode_frame->encoded_bytes = ret;
 			encode_frame->encoded_timestamp = frame->timestamp_;
@@ -154,10 +143,11 @@ bool OpusEncoder2::Start() {
 				fflush(out_audio_file);
 			}
 #endif // 
-			if (encode_audio_obser_)
-			{
-				encode_audio_obser_->SendAudioEncode(encode_frame);
-			}
+			//if (encode_audio_obser_)
+			//{
+			//	encode_audio_obser_->SendAudioEncode(encode_frame);
+			//}
+			SignalAudioEncoderInfoFrame(encode_frame);
         }
 
         opus_encoder_destroy(encoder);
@@ -203,11 +193,7 @@ void OpusEncoder2::OnNewMediaFrame(std::shared_ptr<libmedia_codec::AudioFrame> f
     cond_var_.notify_one();
 }
 
-void OpusEncoder2::SetSendFrame(EncodeAudioObser * encode_audio_obser)
-{
-	encode_audio_obser_ = encode_audio_obser;
-}
-
+ 
 OpusEncoder* OpusEncoder2::CreateEncoder() {
     int err = 0;
     OpusEncoder* encoder = opus_encoder_create(sample_rate_hz_, channels_,

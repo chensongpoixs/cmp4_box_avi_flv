@@ -710,6 +710,6 @@ endforeach()
 
 
 
-set_property(TARGET aac_decder 				PROPERTY FOLDER libmedia_codec/test) 
+set_property(TARGET aac_decder 				PROPERTY FOLDER libmedia/test) 
 
 #file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/resources DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})

@@ -140,9 +140,10 @@ namespace libmedia_codec
 				if (!Encode(frame, out_frame)) {
 					continue;
 				}
-				if (running_ &&encode_image_obser_ &&out_frame)
+				if (running_   &&out_frame)
 				{
-					encode_image_obser_->SendVideoEncode(out_frame);
+					SignalVideoEncodedImage(out_frame);
+					//encode_image_obser_->SendVideoEncode(out_frame);
 				} 
 			}
 
@@ -179,10 +180,7 @@ namespace libmedia_codec
 		cond_var_.notify_one();
 	}
 
-	void X264Encoder::SetSendFrame(EncodeImageObser * encode_image_obser)
-	{
-		encode_image_obser_ = encode_image_obser;
-	}
+	
 	void X264Encoder::SetBitrate(int32_t  bitrate)
 	{
 		

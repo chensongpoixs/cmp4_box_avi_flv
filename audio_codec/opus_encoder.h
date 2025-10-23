@@ -30,18 +30,18 @@
 #include "libmedia_codec/audio_encoder.h"
 #include "opus.h"
 //class OpusEncoder;
-
+#include "rtc_base/third_party/sigslot/sigslot.h"
 namespace libmedia_codec {
-	class EncodeAudioObser
-	{
-	public:
-		virtual ~EncodeAudioObser() {}
-		virtual void   SendAudioEncode(std::shared_ptr<libmedia_codec::AudioEncoder::EncodedInfoLeaf> f) = 0;
-	};
-class OpusEncoder2  {
+	//class EncodeAudioObser 
+	//{
+	//public:
+	//	virtual ~EncodeAudioObser() {}
+	//	virtual void   SendAudioEncode(std::shared_ptr<libmedia_codec::AudioEncoder::EncodedInfoLeaf> f) = 0;
+	//};
+class OpusEncoder2 : public   sigslot::has_slots<> {
 public:
 	OpusEncoder2();
-    ~OpusEncoder2()  ;
+    virtual ~OpusEncoder2()  ;
 	
     bool Start()  ;
 	void SetChannel(int32_t channels);
@@ -50,8 +50,11 @@ public:
      
 	void  OnNewMediaFrame(std::shared_ptr<libmedia_codec::AudioFrame> frame);
     
-	void SetSendFrame(EncodeAudioObser  *   encode_audio_obser);
+	 
+public:
+public:
 
+	sigslot::signal1<std::shared_ptr<libmedia_codec::AudioEncoder::EncodedInfoLeaf>  > SignalAudioEncoderInfoFrame;
 private:
     OpusEncoder* CreateEncoder();
 
@@ -65,7 +68,7 @@ private:
     std::queue<std::shared_ptr<libmedia_codec::AudioFrame>> frame_queue_;
     std::mutex frame_queue_mtx_;
     std::condition_variable cond_var_;
-	EncodeAudioObser  *   encode_audio_obser_;
+	 
 };
 
 } // namespace  
