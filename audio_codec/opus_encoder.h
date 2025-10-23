@@ -59,8 +59,8 @@ private:
     std::thread* encoder_thread_ = nullptr;
     std::atomic<bool> running_{ false };
     int opus_app_;
-    size_t sample_rate_hz_ = 48000;
-    size_t channels_ = 2;
+	size_t sample_rate_hz_ = 0;// 48000;
+	size_t channels_ = 0;//2;
     uint32_t bitrate_ = 48000; // 48kbps
     std::queue<std::shared_ptr<libmedia_codec::AudioFrame>> frame_queue_;
     std::mutex frame_queue_mtx_;

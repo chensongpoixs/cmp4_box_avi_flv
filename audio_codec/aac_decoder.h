@@ -32,7 +32,21 @@ namespace libmedia_codec
 	public:
 		AacDecoder();
 		~AacDecoder();
+		/**
+		 *  
+		 * @param config   ADIF 格式 ( Audio Data Interchange Format ⾳频数据交换格式 ) 是一种用于 存储 AAC 数据的文件格式 , 适合静态音频文件 ;
+
+						ADIF 格式 的 ACC 音频文件 结构简单 , 只 包含一个 文件头部 和 紧随其后的 连续音频数据 ;
+		  
+		 */
 		bool Init(const std::string & config);
+
+		bool Init(unsigned char * adts, int32_t size);
+		/**
+		  @param sample hz 
+		  @param channel 通道数
+		*/
+		bool Init(uint16_t  sample, uint16_t channel);
 		rtc::Buffer Decode(unsigned char *aac, size_t aac_size);
 
 	public:
