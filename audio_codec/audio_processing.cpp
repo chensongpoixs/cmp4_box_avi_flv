@@ -32,7 +32,7 @@ void InitializeCaptureFrame(int input_sample_rate_hz, // 原始采样率
     int send_sample_rate_hz, // 最终发送的采样率
     size_t input_num_channels, // 原始采样的声道数
     size_t send_num_channels, // 最终发送的声道数
-    webrtc::AudioFrame* audio_frame) 
+    libmedia_codec::AudioFrame* audio_frame) 
 {
     int min_processing_sample_rate = std::min(input_sample_rate_hz,
         send_sample_rate_hz);
@@ -80,12 +80,12 @@ void RemixAndResample(const int16_t* src_data,
     size_t num_channels,
     size_t sample_rate_hz,
     webrtc::PushResampler<int16_t>* resampler,
-    webrtc::AudioFrame* dst_frame) 
+	libmedia_codec::AudioFrame* dst_frame)
 {
     const int16_t* audio_ptr = src_data;
     size_t audio_ptr_num_channels = num_channels;
 
-    int16_t downmixed_audio[webrtc::AudioFrame::kMaxDataSizeSamples];
+    int16_t downmixed_audio[libmedia_codec::AudioFrame::kMaxDataSizeSamples];
 
     // 如果原始采集数据的声道数大于目标声道数，此时需要进行向下的声道混合处理
     if (num_channels > dst_frame->num_channels_) {
@@ -108,7 +108,7 @@ void RemixAndResample(const int16_t* src_data,
 
     size_t src_length = samples_per_channel * audio_ptr_num_channels;
     size_t out_length = resampler->Resample(audio_ptr, src_length,
-        dst_frame->mutable_data(), webrtc::AudioFrame::kMaxDataSizeSamples);
+        dst_frame->mutable_data(), libmedia_codec::AudioFrame::kMaxDataSizeSamples);
     if (out_length == -1) {
         RTC_LOG(LS_ERROR) << "Resample failed, audio_ptr: " << audio_ptr
             << ", src_length: " << src_length
@@ -119,7 +119,7 @@ void RemixAndResample(const int16_t* src_data,
     dst_frame->samples_per_channel_ = out_length / audio_ptr_num_channels;
 }
 
-int ProcessAudioFrame(webrtc::AudioProcessing* ap, webrtc::AudioFrame* frame) {
+int ProcessAudioFrame(webrtc::AudioProcessing* ap, libmedia_codec::AudioFrame* frame) {
     if (!ap || !frame) {
         return webrtc::AudioProcessing::Error::kNullPointerError;
     }
@@ -134,7 +134,7 @@ int ProcessAudioFrame(webrtc::AudioProcessing* ap, webrtc::AudioFrame* frame) {
 
 void ProcessCaptureFrame(uint32_t total_delay_ms, bool key_pressed,
     webrtc::AudioProcessing* audio_processing,
-    webrtc::AudioFrame* audio_frame)         
+	libmedia_codec::AudioFrame* audio_frame)
 {
     if (audio_processing) {
         audio_processing->set_stream_delay_ms(total_delay_ms);
@@ -159,85 +159,83 @@ AudioProcessingFilter::~AudioProcessingFilter() {
 bool AudioProcessingFilter::Start() {
     return true;
 }
-//
-//void AudioProcessingFilter::Setup(const std::string& json_config) {
-//    JsonValue value;
-//    value.FromJson(json_config);
-//    JsonObject jobj = value.ToObject();
-//    JsonObject j_audio_processing_filter = jobj["audio_processing_filter"].ToObject();
-//    bool aec_enable = j_audio_processing_filter["AEC"].ToBool();
-//    bool vad_enable = j_audio_processing_filter["VAD"].ToBool();
-//    bool high_pass_filter_enable = j_audio_processing_filter["high_pass_filter"].ToBool();
-//    bool ans_enable = j_audio_processing_filter["ANS"].ToBool();
-//    bool agc_enable = j_audio_processing_filter["AGC"].ToBool();
-//
-//    encoder_clock_rate_ = j_audio_processing_filter["encoder_clock_rate"].ToInt();
-//    encoder_channels_ = j_audio_processing_filter["encoder_channels"].ToInt();
-//
-//    // 获得apm模块默认的配置
-//    webrtc::AudioProcessing::Config apm_config = audio_processing_->GetConfig();
-//    // AEC
-//    apm_config.echo_canceller.enabled = aec_enable;
-//    //apm_config.echo_canceller.mobile_mode = true;
-//
-//    // VAD
-//    apm_config.high_pass_filter.enabled = high_pass_filter_enable;
-//    apm_config.voice_detection.enabled = vad_enable;
-//
-//    // ANS
-//    apm_config.noise_suppression.enabled = true;
-//    // 降噪等级
-//    apm_config.noise_suppression.level 
-//        = webrtc::AudioProcessing::Config::NoiseSuppression::kHigh;
-//
-//    // AGC
-//    apm_config.gain_controller1.enabled = agc_enable;
-//#if defined(WEBRTC_WIN)
-//    apm_config.gain_controller1.mode = apm_config.gain_controller1.kAdaptiveAnalog;
-//#endif
-//
-//    // 应用功能设置
-//    audio_processing_->ApplyConfig(apm_config);
-//}
+
+void AudioProcessingFilter::Configure( ) {
+     
+	bool aec_enable = true;
+		bool vad_enable = true;
+		bool high_pass_filter_enable = true;
+		bool ans_enable = true;
+	bool agc_enable = true;
+
+	encoder_clock_rate_ = 48000;
+	encoder_channels_ = 2;//  
+
+    // 获得apm模块默认的配置
+    webrtc::AudioProcessing::Config apm_config = audio_processing_->GetConfig();
+    // AEC
+    apm_config.echo_canceller.enabled = aec_enable;
+    //apm_config.echo_canceller.mobile_mode = true;
+
+    // VAD
+    apm_config.high_pass_filter.enabled = high_pass_filter_enable;
+    apm_config.voice_detection.enabled = vad_enable;
+
+    // ANS
+    apm_config.noise_suppression.enabled = true;
+    // 降噪等级
+    apm_config.noise_suppression.level 
+        = webrtc::AudioProcessing::Config::NoiseSuppression::kHigh;
+
+    // AGC
+    apm_config.gain_controller1.enabled = agc_enable;
+#if defined(WEBRTC_WIN)
+    apm_config.gain_controller1.mode = apm_config.gain_controller1.kAdaptiveAnalog;
+#endif
+
+    // 应用功能设置
+    audio_processing_->ApplyConfig(apm_config);
+}
 
 void AudioProcessingFilter::Stop() {
 }
 
 void AudioProcessingFilter::OnNewMediaFrame(std::shared_ptr<libmedia_codec::AudioFrame> frame) {
-    auto audio_frame = std::make_unique<webrtc::AudioFrame>();
+    auto audio_frame = std::make_unique<libmedia_codec::AudioFrame>();
     // 最小采样率和声道数处理
     // 我们采集的声道数和采样率，与我们最终的发送声道数和采样率是不同的
     // 音频处理模块，它能够处理的采样率有几个固定的档位
-    //InitializeCaptureFrame(frame->fmt.sub_fmt.audio_fmt.samples_per_sec,
-    //    encoder_clock_rate_,
-    //    frame->fmt.sub_fmt.audio_fmt.channels,
-    //    encoder_channels_,
-    //    audio_frame.get());
+    InitializeCaptureFrame(frame->sample_rate_hz(),
+        encoder_clock_rate_,
+        frame->num_channels(),
+        encoder_channels_,
+        audio_frame.get());
 
     //// 此时，我们可以获得音频处理的最小采样率和声道数
     //// 但是，原始采集数据的音频采样率和声道数，可能与这个采样率和声道数不相同
     //// 所以，需要进行声道混合和重采样的处理
-    //RemixAndResample((int16_t*)frame->data[0],
-    //    frame->fmt.sub_fmt.audio_fmt.samples_per_channel,
-    //    frame->fmt.sub_fmt.audio_fmt.channels,
-    //    frame->fmt.sub_fmt.audio_fmt.samples_per_sec,
-    //    &capture_resampler_,
-    //    audio_frame.get());
+    RemixAndResample((const int16_t*) frame->data (),
+        frame->samples_per_channel(),
+        frame->num_channels(),
+        frame->sample_rate_hz(),
+        &capture_resampler_,
+        audio_frame.get());
 
     //// 3A处理
-    //ProcessCaptureFrame(frame->fmt.sub_fmt.audio_fmt.total_delay_ms,
-    //    frame->fmt.sub_fmt.audio_fmt.key_pressed,
-    //    audio_processing_.get(),
-    //    audio_frame.get());
+    ProcessCaptureFrame( frame->audio_delay_milliseconds_/*total_delay_ms*/,
+		frame->key_pressed_, //key_pressed,
+        audio_processing_.get(),
+        audio_frame.get());
 
     //// copy预处理之后的音频数据
-    //memcpy(frame->data[0], audio_frame->data(), audio_frame->samples_per_channel_
-    //    * audio_frame->num_channels_ 
-    //    * frame->fmt.sub_fmt.audio_fmt.nbytes_per_sample);
+    memcpy(frame->mutable_data() , audio_frame->data(), audio_frame->samples_per_channel_
+        * audio_frame->num_channels_ 
+        * frame->samples_per_channel());
     //
     //if (out_pin_) {
     //    out_pin_->PushMediaFrame(frame);
     //}
+	SignalAudio3AFrame(frame);
 }
 
 } // namespace  

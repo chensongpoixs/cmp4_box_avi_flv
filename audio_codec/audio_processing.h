@@ -24,17 +24,23 @@
 #include <modules/audio_processing/include/audio_processing.h>
 #include <common_audio/resampler/include/push_resampler.h>
 #include "libmedia_codec/audio_frame.h"
+#include "rtc_base/third_party/sigslot/sigslot.h"
 namespace libmedia_codec {
 
-class AudioProcessingFilter   {
+class AudioProcessingFilter : public   sigslot::has_slots<> {
 public:
     AudioProcessingFilter();
     ~AudioProcessingFilter()  ;
 
     bool Start()  ; 
     void Stop()  ;
+	void Configure();
     void OnNewMediaFrame(std::shared_ptr<libmedia_codec::AudioFrame> frame)  ;
     
+public:
+public:
+
+	sigslot::signal1<std::shared_ptr<libmedia_codec::AudioFrame>  > SignalAudio3AFrame;
 private: 
     rtc::scoped_refptr<webrtc::AudioProcessing> audio_processing_;
     int encoder_clock_rate_ = 48000;

@@ -30,6 +30,7 @@
 #include "i420_buffer.h"
 #include "libmedia_codec/video_frame.h"
 #include "libmedia_codec/encoded_image.h"
+#include "rtc_base/third_party/sigslot/sigslot.h"
 //#include <al>
 namespace  libmedia_codec
 {
@@ -40,6 +41,8 @@ namespace  libmedia_codec
 		std::string tune = "zerolatency";
 		// profile
 		std::string profile = "baseline";
+		
+		int32_t   level_idc = 31;
 		// 码率控制，CQP、CRF、ABR
 		std::string rate_control = "ABR";
 		// 目标码率, 单位kbps
@@ -54,17 +57,14 @@ namespace  libmedia_codec
 		int fps = 30;
 		// GOP
 		int gop = 60; // 2s
+
 	};
 
-	class EncodeImageObser
-	{
-	public:
-		virtual ~EncodeImageObser() {}
-		virtual void   SendVideoEncode(std::shared_ptr<libmedia_codec::EncodedImage> f) = 0;
-	};
+ 
 
 
-	class X264Encoder  {
+	class X264Encoder 
+		: public   sigslot::has_slots<> {
 	public:
 		X264Encoder();
 		~X264Encoder()  ;
@@ -73,10 +73,13 @@ namespace  libmedia_codec
 		void Stop()  ;
 		void OnNewMediaFrame(std::shared_ptr<libmedia_codec::VideoFrame>)  ;
 		 
-		void SetSendFrame(EncodeImageObser  *   encode_image_obser);
-
+		 
 
 		void SetBitrate(int32_t  bitrate);
+
+	public:
+
+		sigslot::signal1<std::shared_ptr<libmedia_codec::EncodedImage>  > SignalVideoEncodedImage;
 	private:
 		bool InitEncoder();
 		void ReleaseEncoder();
@@ -96,7 +99,7 @@ namespace  libmedia_codec
 		x264_t* x264_ = nullptr;
 		x264_picture_t* x264_picture_ = nullptr;
 
-		EncodeImageObser  *   encode_image_obser_;
+		//EncodeImageObser  *   encode_image_obser_;
 
 		int32_t                last_bitrate_;
 	};

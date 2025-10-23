@@ -140,9 +140,10 @@ namespace libmedia_codec
 				if (!Encode(frame, out_frame)) {
 					continue;
 				}
-				if (encode_image_obser_)
+				if (running_   &&out_frame)
 				{
-					encode_image_obser_->SendVideoEncode(out_frame);
+					SignalVideoEncodedImage(out_frame);
+					//encode_image_obser_->SendVideoEncode(out_frame);
 				} 
 			}
 
@@ -170,15 +171,16 @@ namespace libmedia_codec
 		}
 	}
 	void X264Encoder::OnNewMediaFrame(std::shared_ptr<libmedia_codec::VideoFrame> frame) {
+		if (!running_)
+		{
+			return;
+		}
 		std::unique_lock<std::mutex> auto_lock(frame_queue_mtx_);
 		frame_queue_.push(frame);
 		cond_var_.notify_one();
 	}
 
-	void X264Encoder::SetSendFrame(EncodeImageObser * encode_image_obser)
-	{
-		encode_image_obser_ = encode_image_obser;
-	}
+	
 	void X264Encoder::SetBitrate(int32_t  bitrate)
 	{
 		
@@ -215,7 +217,7 @@ namespace libmedia_codec
 		x264_param_->i_threads = 1;
 		// 每个I帧前面都携带SPS PPS
 		x264_param_->b_repeat_headers = 1;
-
+		x264_param_->i_level_idc = encoder_param_.level_idc;
 		// 设置码率控制参数
 		if ("ABR" == encoder_param_.rate_control) {
 			x264_param_->rc.i_rc_method = X264_RC_ABR;
@@ -314,9 +316,9 @@ namespace libmedia_codec
 		std::vector<x264_nal_t> nals;
 		bool idr = false;
 		int sps_length = 0;
-		char sps[1024] = { 0 };
+		char sps[1024*8] = { 0 };
 		int pps_length = 0;
-		char pps[1024] = { 0 };
+		char pps[1024*8] = { 0 };
 
 		for (int i = 0; i < nal_num; ++i) {
 			x264_nal_t& nal = nal_out[i];

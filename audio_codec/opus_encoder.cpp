@@ -36,8 +36,8 @@ const int kDefaultComplexity = 9;
 } // namespace
 
 OpusEncoder2::OpusEncoder2() :
-    opus_app_(OPUS_APPLICATION_VOIP)
-	, encode_audio_obser_(nullptr)
+    opus_app_(OPUS_APPLICATION_VOIP/*OPUS_APPLICATION_AUDIO*/)
+	 
 {
      
 }
@@ -129,18 +129,7 @@ bool OpusEncoder2::Start() {
 				fflush(out_pcm_ptr);
 			}*/
 
-            // 创建新的media frame
-            //auto output_frame = std::make_shared<MediaFrame>(ret);
-            //output_frame->fmt.media_type = MainMediaType::kMainTypeAudio;
-            //output_frame->fmt.sub_fmt = frame->fmt.sub_fmt;
-            //output_frame->fmt.sub_fmt.audio_fmt.type = SubMediaType::kSubTypeOpus;
-            //output_frame->data_len[0] = ret;
-            //memcpy(output_frame->data[0], encoded_buffer, ret);
-            //output_frame->ts = frame->ts;
-			//
-            //if (out_pin_) {
-            //    out_pin_->PushMediaFrame(output_frame);
-            //}
+           
 			auto encode_frame = std::make_shared< AudioEncoder::EncodedInfoLeaf>();
 			encode_frame->encoded_bytes = ret;
 			encode_frame->encoded_timestamp = frame->timestamp_;
@@ -154,10 +143,11 @@ bool OpusEncoder2::Start() {
 				fflush(out_audio_file);
 			}
 #endif // 
-			if (encode_audio_obser_)
-			{
-				encode_audio_obser_->SendAudioEncode(encode_frame);
-			}
+			//if (encode_audio_obser_)
+			//{
+			//	encode_audio_obser_->SendAudioEncode(encode_frame);
+			//}
+			SignalAudioEncoderInfoFrame(encode_frame);
         }
 
         opus_encoder_destroy(encoder);
@@ -165,7 +155,14 @@ bool OpusEncoder2::Start() {
 
     return true;
 }
- 
+void OpusEncoder2::SetChannel(int32_t channels)
+{
+	channels_ = channels;
+}
+void  OpusEncoder2::SetSample(int32_t  sample)
+{
+	sample_rate_hz_ = sample;
+}
 
 void OpusEncoder2::Stop() {
     RTC_LOG(LS_INFO) << "OpusEncoder2 Stop";
@@ -187,15 +184,16 @@ void OpusEncoder2::Stop() {
 void OpusEncoder2::OnNewMediaFrame(std::shared_ptr<libmedia_codec::AudioFrame> frame) {
     // 在音频采集线程触发
     std::unique_lock<std::mutex> lock(frame_queue_mtx_);
+	if (!running_)
+	{
+		LIBMEIDA_CODEC_LOG_T_F(LS_WARNING) << "opus encoder add frame failed !!! stop !!!";
+		return;
+	}
     frame_queue_.push(frame);
     cond_var_.notify_one();
 }
 
-void OpusEncoder2::SetSendFrame(EncodeAudioObser * encode_audio_obser)
-{
-	encode_audio_obser_ = encode_audio_obser;
-}
-
+ 
 OpusEncoder* OpusEncoder2::CreateEncoder() {
     int err = 0;
     OpusEncoder* encoder = opus_encoder_create(sample_rate_hz_, channels_,

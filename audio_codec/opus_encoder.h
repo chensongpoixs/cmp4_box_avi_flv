@@ -30,27 +30,31 @@
 #include "libmedia_codec/audio_encoder.h"
 #include "opus.h"
 //class OpusEncoder;
-
+#include "rtc_base/third_party/sigslot/sigslot.h"
 namespace libmedia_codec {
-	class EncodeAudioObser
-	{
-	public:
-		virtual ~EncodeAudioObser() {}
-		virtual void   SendAudioEncode(std::shared_ptr<libmedia_codec::AudioEncoder::EncodedInfoLeaf> f) = 0;
-	};
-class OpusEncoder2  {
+	//class EncodeAudioObser 
+	//{
+	//public:
+	//	virtual ~EncodeAudioObser() {}
+	//	virtual void   SendAudioEncode(std::shared_ptr<libmedia_codec::AudioEncoder::EncodedInfoLeaf> f) = 0;
+	//};
+class OpusEncoder2 : public   sigslot::has_slots<> {
 public:
 	OpusEncoder2();
-    ~OpusEncoder2()  ;
-
+    virtual ~OpusEncoder2()  ;
+	
     bool Start()  ;
-     
+	void SetChannel(int32_t channels);
+	void  SetSample(int32_t  sample);
     void Stop()  ;
      
 	void  OnNewMediaFrame(std::shared_ptr<libmedia_codec::AudioFrame> frame);
     
-	void SetSendFrame(EncodeAudioObser  *   encode_audio_obser);
+	 
+public:
+public:
 
+	sigslot::signal1<std::shared_ptr<libmedia_codec::AudioEncoder::EncodedInfoLeaf>  > SignalAudioEncoderInfoFrame;
 private:
     OpusEncoder* CreateEncoder();
 
@@ -58,13 +62,13 @@ private:
     std::thread* encoder_thread_ = nullptr;
     std::atomic<bool> running_{ false };
     int opus_app_;
-    size_t sample_rate_hz_ = 48000;
-    size_t channels_ = 1;
+	size_t sample_rate_hz_ = 0;// 48000;
+	size_t channels_ = 0;//2;
     uint32_t bitrate_ = 48000; // 48kbps
     std::queue<std::shared_ptr<libmedia_codec::AudioFrame>> frame_queue_;
     std::mutex frame_queue_mtx_;
     std::condition_variable cond_var_;
-	EncodeAudioObser  *   encode_audio_obser_;
+	 
 };
 
 } // namespace  

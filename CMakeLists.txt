@@ -65,6 +65,7 @@ add_library(${PROJECT_NAME}   STATIC  ${libmedia_codec_source})
 
  
 
+add_subdirectory(test)
 
 #set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS /SAFESEH:NO")
 
@@ -86,6 +87,6 @@ endforeach()
 
 
 
-#set_property(TARGET ${PROJECT_NAME}  				PROPERTY FOLDER libice) 
+set_property(TARGET ${PROJECT_NAME}  				PROPERTY FOLDER libmedia) 
 
 #file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/resources DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
