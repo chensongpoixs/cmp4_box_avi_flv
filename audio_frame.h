@@ -167,8 +167,8 @@ class AudioFrame {
   
 
   //
-  uint32_t   audio_delay_milliseconds_;
-  bool   key_pressed_;
+  uint32_t   audio_delay_milliseconds_ = 0;
+  bool   key_pressed_ = false;
  private:
   // A permanently zeroed out buffer to represent muted frames. This is a
   // header-only class, so the only way to avoid creating a separate empty
