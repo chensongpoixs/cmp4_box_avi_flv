@@ -70,7 +70,9 @@ namespace libmedia_codec
 			{
 				// // Add NAL unit length field.
 				// ∂¡»°»ÎNALU length field
-				uint16_t nal_size = libmedia_transfer_protocol::ByteReader<uint16_t>::ReadBigEndian(src);
+				// uint16_t nal_size = (uint16_t )(*src);//libmedia_transfer_protocol::ByteReader<uint16_t>::ReadLittleEndian(src);
+				uint16_t nal_size =  libmedia_transfer_protocol::ByteReader<uint16_t>::ReadBigEndian(src);
+
 				//uint16_t nal_size = AV_RB16(src);
 
 				// consume the length of the aggregate
@@ -78,11 +80,12 @@ namespace libmedia_codec
 				src_len -= 2;
 
 				if (nal_size <= src_len) {
-					if (pass == 0) {
+					//if (pass == 0) {
 						// counting
 						//total_length += sizeof(start_sequence) + nal_size;
-					}
-					else {
+					//}
+					//else 
+					{
 						// copying
 						//nal_aggregated << start_sequence;
 						//nal_aggregated << std::string((char *)src, nal_size);
