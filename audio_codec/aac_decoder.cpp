@@ -17,7 +17,8 @@
 
  ******************************************************************************/
 #include "libmedia_codec/audio_codec/aac_decoder.h"
-#include "rtc_base/logging.h"
+
+#include "libmedia_codec/libmedia_codec_log.h"
 namespace libmedia_codec
 {
 	

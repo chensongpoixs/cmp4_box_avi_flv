@@ -72,8 +72,8 @@ adts_buffer_fullness：0x7FF 说明是码率可变的码流
  ******************************************************************************/
 
 #include "libmedia_codec/audio_codec/adts_header.h"
-#include "rtc_base/logging.h"
- 
+//#include "rtc_base/logging.h"
+#include "libmedia_codec/libmedia_codec_log.h"
 namespace libmedia_codec
 {
 
