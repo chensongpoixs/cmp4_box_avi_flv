@@ -26,6 +26,7 @@
 #include <atomic>
 #include <queue>
 #include <mutex>
+#include <condition_variable>
 #include "libmedia_codec/audio_frame.h"
 #include "libmedia_codec/audio_encoder.h"
 #include "opus.h"
