@@ -24,10 +24,10 @@
 
 namespace libmedia_codec {
 
-HdrMasteringMetadata::Chromaticity::Chromaticity() = default;
+//HdrMasteringMetadata::Chromaticity::Chromaticity() = default;
 
-HdrMasteringMetadata::HdrMasteringMetadata() = default;
+//HdrMasteringMetadata::HdrMasteringMetadata() = default;
 
-HdrMetadata::HdrMetadata() = default;
+//HdrMetadata::HdrMetadata() = default;
 
 }  // namespace webrtc

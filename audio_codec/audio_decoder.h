@@ -46,7 +46,7 @@ extern "C" {
 #include "libavutil/ffversion.h"
 #include "libswresample/swresample.h"
 #include "libswscale/swscale.h"
-#include "libpostproc/postprocess.h"
+//#include "libpostproc/postprocess.h"
 #include "libavcodec/avcodec.h"
 #include "libavutil/imgutils.h"
 }  // extern "C"

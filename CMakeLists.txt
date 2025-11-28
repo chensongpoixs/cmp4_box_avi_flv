@@ -37,6 +37,9 @@ file(GLOB libmedia_codec_source
 	*.h
 	*.cpp 
 	 *.cc 
+	 video_content_type.h 
+	 
+	video_content_type.cpp 
  
  	video_codecs/*.h
 	video_codecs/*.cpp 
@@ -65,7 +68,7 @@ add_library(${PROJECT_NAME}   STATIC  ${libmedia_codec_source})
 
  
 
-add_subdirectory(test)
+
 
 #set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS /SAFESEH:NO")
 
@@ -90,3 +93,17 @@ endforeach()
 set_property(TARGET ${PROJECT_NAME}  				PROPERTY FOLDER libmedia) 
 
 #file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/resources DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+
+
+
+
+if (CMAKE_SYSTEM_NAME MATCHES "Windows")
+    message(STATUS "current platform: windows")
+    add_subdirectory(test)
+
+elseif (CMAKE_SYSTEM_NAME MATCHES "Linux")
+	message(STATUS "current platform: unix")
+     
+
+
+endif()

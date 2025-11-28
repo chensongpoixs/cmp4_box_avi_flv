@@ -25,6 +25,7 @@
 #include <cstring>
 #include <ostream>
 #include <iostream>
+#include  <memory>
 namespace libmedia_codec
 {
 
@@ -45,11 +46,11 @@ namespace libmedia_codec
 
 		virtual int32_t  parse_packet(const uint8_t * data, size_t size) = 0;
 	public:
-		// fa µ¥°ü
+		// fa ï¿½ï¿½ï¿½ï¿½
 		int ff_h264_handle_aggregated_packet(const uint8_t *buf, int len,
 			int skip_between, int *nal_counters,
 			int nal_mask);
-		// ×é°ü
+		// ï¿½ï¿½ï¿½
 		int h264_handle_packet_fu_a(
 			const uint8_t *buf, int len,
 			int *nal_counters, int nal_mask);

@@ -28,7 +28,7 @@ namespace libmedia_codec {
 // see https://ieeexplore.ieee.org/document/8353899.
 struct HdrMasteringMetadata {
   struct Chromaticity {
-    Chromaticity();
+    Chromaticity(){}
 
     bool operator==(const Chromaticity& rhs) const {
       return x == rhs.x && y == rhs.y;
@@ -47,7 +47,7 @@ struct HdrMasteringMetadata {
     float y = 0.0f;
   };
 
-  HdrMasteringMetadata();
+  HdrMasteringMetadata(){}
 
   bool operator==(const HdrMasteringMetadata& rhs) const {
     return ((primary_r == rhs.primary_r) && (primary_g == rhs.primary_g) &&
@@ -86,7 +86,7 @@ struct HdrMasteringMetadata {
 // formats. This struct replicates the HDRMetadata struct defined in
 // https://cs.chromium.org/chromium/src/media/base/hdr_metadata.h
 struct HdrMetadata {
-  HdrMetadata();
+  HdrMetadata(){}
 
   bool operator==(const HdrMetadata& rhs) const {
     return (

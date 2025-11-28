@@ -27,6 +27,8 @@
 #include <mutex>
 #include <queue>
 #include <atomic>
+#include <condition_variable>
+#include <thread>
 #include "i420_buffer.h"
 #include "libmedia_codec/video_frame.h"
 #include "libmedia_codec/encoded_image.h"
