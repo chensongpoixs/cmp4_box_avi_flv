@@ -25,6 +25,9 @@
 #define _C_API_VIDEO_VIDEO_CONTENT_TYPE_H_
 
 #include <stdint.h>
+#include <cstdio>
+#include <cstdlib>
+
 
 namespace libmedia_codec {
 
